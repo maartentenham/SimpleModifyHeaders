@@ -41,6 +41,9 @@
 						<button type="button" id="append_button" class="btn btn-primary btn-sm">
           						<span class="glyphicon glyphicon-import"></span> Append
 						</button>
+						<button type="button" id="presets_button" class="btn btn-primary btn-sm">
+          						<span class="glyphicon glyphicon-list-alt"></span> Presets
+						</button>
 						<button type="button" id="parameters_button" class="btn btn-primary btn-sm">
           						<span class="glyphicon glyphicon-cog"></span> Parameters
 						</button>
@@ -113,13 +116,64 @@
 
 	</div>
 
+	<!-- PRESETS SCREEN -->
+	<div id="presets_screen" hidden>
+		<h2 class="title"> SIMPLE MODIFY HEADERS  </h2>
 
+		<strong> Presets : </strong>
+		<br/>
+		<br/>
+		<em style="font-size:10pt"> Apply a preset to add its header rule(s) to your current configuration (click "Save" afterwards to activate). To create your own preset, check the rows you want in the main screen's "Export" column, then click "Save selected as preset" below. </em>
+		<br/>
+		<br/>
+
+		<table id="presets_table" class="table-condensed standard_table">
+			<thead>
+				<tr>
+					<th style="text-align:left"> Name </th>
+					<th style="text-align:left"> Description </th>
+					<th style="text-align:left"> Headers </th>
+					<th> </th>
+					<th> </th>
+				</tr>
+			</thead>
+			<tbody id="presets_tab">
+			</tbody>
+		</table>
+		<br/>
+
+		<button type="button" id="save_preset_button" class="btn btn-primary btn-sm">
+			<span class="glyphicon glyphicon-save"></span> Save selected rows as preset
+		</button>
+
+		<div id="save_preset_dialog" hidden style="margin-top:15px; border:1px solid #AAAAAA; padding:10px; width:420px; text-align:left">
+			<strong> New preset </strong>
+			<br/>
+			<br/>
+			Name: <input type="text" id="new_preset_name" class="form_control input_field_medium" />
+			<br/>
+			<br/>
+			Description: <input type="text" id="new_preset_description" class="form_control input_field_large" />
+			<br/>
+			<br/>
+			<button type="button" id="confirm_save_preset_button" class="btn btn-primary btn-sm">Save</button>
+			<button type="button" id="cancel_save_preset_button" class="btn btn-default btn-sm">Cancel</button>
+		</div>
+
+		<br/>
+		<br/>
+		<a href="#" id="exit_presets_screen_button" class="btn btn-primary btn-sm" style="width:100px">
+        		<span class="glyphicon glyphicon-step-backward"></span> Back
+        	</a>
+	</div>
 
 	<iframe id="download" title="hidden_download_frame" width="0" height="0" style="border:none;"> 
 	</iframe>
 	<br/>
 	<script type="text/javascript" src="common.js"> </script>
 	<script type="text/javascript" src="regexps.js"> </script>
+	<script type="text/javascript" src="presets-data.js"> </script>
+	<script type="text/javascript" src="presets.js"> </script>
 	<script type="text/javascript" src="config.js"> </script>
 </div>
 </body>

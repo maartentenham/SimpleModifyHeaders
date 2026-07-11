@@ -100,6 +100,7 @@ function initConfigurationPage() {
         document.getElementById('debug_mode').addEventListener('click', function (e) {
             clickOnDebugCheckBox();
         });
+        initPresetsScreen();
         reshapeTable();
     });
 }
