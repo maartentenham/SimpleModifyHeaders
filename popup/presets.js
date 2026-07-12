@@ -124,12 +124,14 @@ function renderPresetsList() {
 }
 
 /**
- * Apply a preset: append its header rule(s) as new rows in the main config
- * table. This only touches the in-page table - like adding a line manually,
- * the user still needs to click "Save" on the main screen to persist and
- * activate it.
+ * Apply a preset: clears every existing row from the main config table,
+ * then appends the preset's header rule(s) as the new rows. Like adding a
+ * line manually, this only touches the in-page table - the user still
+ * needs to click "Save" on the main screen to persist and activate it.
  **/
 function applyPreset(preset) {
+    document.getElementById('config_tab').innerHTML = '';
+
     preset.headers.forEach((h) => {
         appendLine(
             h.url_contains || '',
