@@ -108,18 +108,18 @@ function initConfigurationPage() {
 function getDefaultConfig() {
     console.log('Load default config');
     let headers = [];
-    headers.push({
-        url_contains: '',
-        action: 'add',
-        header_name: 'test-header-name',
-        header_value: 'test-header-value',
-        comment: 'test',
-        apply_on: 'req',
-        status: 'on'
-    });
+    // headers.push({
+    //     url_contains: '',
+    //     action: 'add',
+    //     header_name: 'test-header-name',
+    //     header_value: 'test-header-value',
+    //     comment: 'test',
+    //     apply_on: 'req',
+    //     status: 'on'
+    // });
     return {
         format_version: '1.2',
-        target_page: 'https://httpbin.org/*',
+        target_page: '*',
         headers: headers,
         debug_mode: false,
         use_url_contains: false

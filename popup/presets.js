@@ -36,6 +36,9 @@ function initPresetsScreen() {
     document.getElementById('confirm_save_preset_button').addEventListener('click', function () {
         confirmSavePreset();
     });
+    document.getElementById('add_preset_header_button').addEventListener('click', function () {
+        appendPresetEditorRow('add', '', '', 'req', '');
+    });
 }
 
 function showPresetsScreen() {
@@ -147,28 +150,39 @@ function applyPreset(preset) {
     hidePresetsScreen();
 }
 
+let preset_editor_line_number = 0;
+
+/**
+ * Opens the "new preset" dialog. If any rows are currently checked "To
+ * export" on the main screen, the editor is pre-filled with those rows as
+ * a convenience; otherwise it opens with a single blank row. Either way,
+ * rows in the editor can be freely added, edited, or removed before saving.
+ **/
 function openSavePresetDialog() {
     document.getElementById('save_preset_dialog').hidden = false;
+    document.getElementById('preset_editor_tab').innerHTML = '';
+    preset_editor_line_number = 0;
+
+    const selectedHeaders = getSelectedRowsFromMainTable();
+    if (selectedHeaders.length > 0) {
+        selectedHeaders.forEach((h) =>
+            appendPresetEditorRow(h.action, h.header_name, h.header_value, h.apply_on, h.comment)
+        );
+    } else {
+        appendPresetEditorRow('add', '', '', 'req', '');
+    }
 }
 
 function closeSavePresetDialog() {
     document.getElementById('save_preset_dialog').hidden = true;
     document.getElementById('new_preset_name').value = '';
     document.getElementById('new_preset_description').value = '';
+    document.getElementById('preset_editor_tab').innerHTML = '';
+    preset_editor_line_number = 0;
 }
 
-/**
- * Collect the rows currently marked "To export" on the main screen and
- * save them as a new custom preset.
- **/
-function confirmSavePreset() {
-    const name = document.getElementById('new_preset_name').value.trim();
-    if (!name) {
-        alert('Please enter a name for the preset');
-        return;
-    }
-    const description = document.getElementById('new_preset_description').value.trim();
-
+/** Read the rows currently checked "To export" on the main config table **/
+function getSelectedRowsFromMainTable() {
     const tr_elements = document.querySelectorAll('#config_tab tr');
     const headers = [];
     for (let i = 0; i < tr_elements.length; i++) {
@@ -184,9 +198,96 @@ function confirmSavePreset() {
             });
         }
     }
+    return headers;
+}
+
+/**
+ * Adds one editable header row to the preset editor table in the "new
+ * preset" dialog, pre-filled with the given values. A "remove" button lets
+ * the user delete just that row again.
+ **/
+function appendPresetEditorRow(action, header_name, header_value, apply_on, comment) {
+    const n = preset_editor_line_number++;
+
+    let actionOptions = `
+        <option value="add">Add</option>
+        <option value="modify">Modify</option>
+        <option value="delete">Delete</option>`;
+    if (!useManifestV3) {
+        actionOptions += `
+        <option value="cookie_add_or_modify">Cookie Add/Modify</option>
+        <option value="cookie_delete">Cookie Delete</option>`;
+    }
+
+    const tr = document.createElement('tr');
+    tr.id = 'preset_editor_line' + n;
+    tr.innerHTML = `
+        <td>
+            <select class="form_control select_field" id="preset_action${n}">${actionOptions}</select>
+        </td>
+        <td>
+            <input class="form_control input_field_medium" id="preset_header_name${n}" placeholder="Header name" />
+        </td>
+        <td>
+            <input class="form_control input_field_medium" id="preset_header_value${n}" placeholder="Header value" />
+        </td>
+        <td>
+            <select class="form_control select_field" id="preset_apply_on${n}">
+                <option value="req">Request</option>
+                <option value="res">Response</option>
+            </select>
+        </td>
+        <td>
+            <input class="form_control input_field_medium" id="preset_comment${n}" placeholder="Comment" />
+        </td>
+        <td>
+            <button type="button" class="btn btn-default btn-sm" title="Remove this header">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+        </td>
+    `;
+    document.getElementById('preset_editor_tab').appendChild(tr);
+    document.getElementById('preset_action' + n).value = action || 'add';
+    document.getElementById('preset_header_name' + n).value = header_name || '';
+    document.getElementById('preset_header_value' + n).value = header_value || '';
+    document.getElementById('preset_apply_on' + n).value = apply_on || 'req';
+    document.getElementById('preset_comment' + n).value = comment || '';
+
+    tr.querySelector('button').addEventListener('click', function () {
+        tr.remove();
+    });
+}
+
+/**
+ * Reads every row currently in the preset editor table and saves them as a
+ * new custom preset. Rows with no header name are skipped.
+ **/
+function confirmSavePreset() {
+    const name = document.getElementById('new_preset_name').value.trim();
+    if (!name) {
+        alert('Please enter a name for the preset');
+        return;
+    }
+    const description = document.getElementById('new_preset_description').value.trim();
+
+    const editorRows = document.querySelectorAll('#preset_editor_tab tr');
+    const headers = [];
+    editorRows.forEach((tr) => {
+        const header_name = tr.querySelector('[id^="preset_header_name"]').value.trim();
+        if (!header_name) return;
+        headers.push({
+            url_contains: '',
+            action: tr.querySelector('[id^="preset_action"]').value,
+            header_name: header_name,
+            header_value: tr.querySelector('[id^="preset_header_value"]').value,
+            comment: tr.querySelector('[id^="preset_comment"]').value,
+            apply_on: tr.querySelector('[id^="preset_apply_on"]').value,
+            status: 'on'
+        });
+    });
 
     if (headers.length === 0) {
-        alert('No rows are selected. Check the "Export" column on the rows you want to include, then try again.');
+        alert('Add at least one header (with a header name) before saving the preset.');
         return;
     }
 

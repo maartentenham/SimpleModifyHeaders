@@ -123,7 +123,7 @@
 		<strong> Presets : </strong>
 		<br/>
 		<br/>
-		<em style="font-size:10pt"> Applying a preset immediately replaces all existing header rules with the preset's rule(s) - click "Save" afterwards to activate. To create your own preset, check the rows you want in the main screen's "Export" column, then click "Save selected as preset" below. </em>
+		<em style="font-size:10pt"> Applying a preset immediately replaces all existing header rules with the preset's rule(s) - click "Save" afterwards to activate. Click "New preset" below to build one from scratch, or check rows in the main screen's "Export" column first to pre-fill it from those rows. </em>
 		<br/>
 		<br/>
 
@@ -143,10 +143,10 @@
 		<br/>
 
 		<button type="button" id="save_preset_button" class="btn btn-primary btn-sm">
-			<span class="glyphicon glyphicon-save"></span> Save selected rows as preset
+			<span class="glyphicon glyphicon-plus"></span> New preset
 		</button>
 
-		<div id="save_preset_dialog" hidden style="margin-top:15px; border:1px solid #AAAAAA; padding:10px; width:420px; text-align:left">
+		<div id="save_preset_dialog" hidden style="margin-top:15px; border:1px solid #AAAAAA; padding:10px; width:750px; text-align:left">
 			<strong> New preset </strong>
 			<br/>
 			<br/>
@@ -154,6 +154,28 @@
 			<br/>
 			<br/>
 			Description: <input type="text" id="new_preset_description" class="form_control input_field_large" />
+			<br/>
+			<br/>
+			<strong> Headers : </strong>
+			<br/>
+			<br/>
+			<table id="preset_editor_table" class="table-condensed standard_table" style="width:100%">
+				<thead>
+					<tr>
+						<th> Action </th>
+						<th> Header Field Name </th>
+						<th> Header Field Value </th>
+						<th> Apply on </th>
+						<th> Comment </th>
+						<th> </th>
+					</tr>
+				</thead>
+				<tbody id="preset_editor_tab">
+				</tbody>
+			</table>
+			<button type="button" id="add_preset_header_button" class="btn btn-default btn-sm">
+				<span class="glyphicon glyphicon-plus"></span> Add header
+			</button>
 			<br/>
 			<br/>
 			<button type="button" id="confirm_save_preset_button" class="btn btn-primary btn-sm">Save</button>
